@@ -2,21 +2,21 @@
 This application tracks COVID-19 statistics by US county over time and makes recommendations about potentially reopening the economy.
 
 ## Instructions for the Project:
-https://github.com/prof-rossetti/intro-to-python/blob/master/projects/freestyle/proposal.md
+https://github.com/prof-rossetti/intro-to-python/tree/master/projects/freestyle
 
 ## Install on Local Device
 Fork it, clone it, navigate from the command line
 
 Example
 ```sh
-cd ~/Documents/GitHub/shopping-cart/
+cd ~/Documents/GitHub/COVID19
 ```
 
 ## Setup
 Create an anaconda virtual environment
 Example
 ```sh
-conda activate shopping-env
+conda activate covid-env
 ```
 
 ## Usage
@@ -24,7 +24,7 @@ Run the python script
 
 Example
 ```sh
-python app/shopping_cart.py
+python app/covid.py
 ```
 
 ## Testing
