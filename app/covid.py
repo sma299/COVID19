@@ -5,25 +5,20 @@ import os
 import datetime
 import csv
 import urllib.request
+import pandas as pd
 
 # this is the url that contains all of the county information
 url = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
 
-# use the urllib.request module with the open function
+# use the urllib.request (more information here: https://docs.python.org/3/howto/urllib2.html)
 response = urllib.request.urlopen(url)
 data = response.read()
 
+# using the nytdata in data folder to store information
 file_name = os.path.join(os.path.dirname(__file__),"..", "data", "nytdata.csv")
 
-with open(file_name, 'wt') as f:
+with open(file_name, 'wb') as f:
     f.write(data)
 
-# urllib2 function (more information here: https://docs.python.org/3/howto/urllib2.html)
-# with urlopen(url) as response:
-   # url_text = response.read()
+covid_dict = pd.read_csv(file_name)
 
-# with open(csv_file_path, "r") as csv_file:
-#csv_dict = csv.DictReader(url_text)
-
-#for row in csv_dict:
-    #print(row)
