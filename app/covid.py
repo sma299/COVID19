@@ -2,14 +2,19 @@
 
 # import statements
 import os
-import datetime
+from datetime import date
 import csv
 import urllib.request
 
-# ask user to input a county
-print("Welcome to the COVID-19 county tracker.")
-print("--------------------------------------------------")
+# get the date in order to do the calculations
+today = date.today() 
+print("Current day:", today.day)
 
+# intro to the system
+print("Welcome to the COVID-19 county tracker.")
+print("---------------------------------------")
+
+# ask user to input a county
 county_input = input("Please input your state county here: ") #the resulting value is a string
 
 # this is the url that contains all of the county information
@@ -31,8 +36,13 @@ with open(file_name, 'wb') as f:
 with open(file_name, 'r') as f2:
     csv_file_reader = csv.DictReader(f2)
     for row in csv_file_reader:
-        if str(row["county"]) == county_input:
-            print(row["deaths"])
+        if row["county"] == county_input:
+            county_deaths = row["deaths"] 
+            recent_date = row["date"]
+    for entry in csv_file_reader:
+        if entry["date"] == recent_date and row["county"] == county_input:
+            print("Number of deaths as of " + recent_date)
+        
 
 
 
