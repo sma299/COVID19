@@ -5,6 +5,9 @@ import os
 import datetime
 import csv
 import urllib.request
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # get the date
 today = datetime.datetime.today()
@@ -49,9 +52,16 @@ with open(file_name, 'r') as f2:
             recent_date = row["date"] # find the most recent date
             deaths_array.append(int(new_deaths)) 
             cases_array.append(int(new_cases))
-        
+
+# output message with summary of data
 print(f"As of " + recent_date + ", " + county_input + " County has had " + new_deaths + " new deaths due to COVID-19")
 print(f"The brings the total number of deaths in " + county_input + " County to " + str(total_deaths))
 
-length_array = len(deaths_array) - 1
-print(deaths_array[length_array])
+
+len_deaths = len(deaths_array) - 1
+two_weeks_deaths = deaths_array[len_deaths - 14]
+
+len_cases = len(cases_array) - 1
+two_weeks_cases = cases_array[len_cases - 14]
+
+
