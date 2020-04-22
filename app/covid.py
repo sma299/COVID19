@@ -2,15 +2,16 @@
 
 # import statements
 import os
-from datetime import date
+import datetime
 import csv
 import urllib.request
 
 # get the date
-today = date.today() 
+today = datetime.datetime.today()
 
 # intro to the system
 print("WELCOME TO THE COVID-19 COUNTY TRACKER.")
+print("REQUEST AT: " + today.strftime("%Y-%m-%d %I:%M %p"))
 print("---------------------------------------")
 
 # ask user to input a state and county (the result will be a string)
@@ -33,20 +34,24 @@ with open(file_name, 'wb') as f:
 
 # define total_deaths as an integer
 total_deaths = 0
+deaths_array = []
+cases_array = []
 
 # parse through that data using the CSV module
 # headings ['date', 'county', 'state', 'fips', 'cases', 'deaths']
 with open(file_name, 'r') as f2:
     csv_file_reader = csv.DictReader(f2)
     for row in csv_file_reader:
-        if row["county"] == county_input:
-            total_deaths = total_deaths + int(row["deaths"]) 
-            new_deaths = row["deaths"]
-            recent_date = row["date"]
-    
-print(f"As of " + recent_date + ", " + county_input + " County has had " + new_deaths + " new deaths")
-print(f"The brings the total number of deaths in " + county_input + " County to " + str(total_deaths))
+        if row["county"] == county_input and row["state"] == state_input:
+            total_deaths = total_deaths + int(row["deaths"]) # this will calculate total deaths
+            new_cases = row["cases"] # most recent
+            new_deaths = row["deaths"] # most recent death count 
+            recent_date = row["date"] # find the most recent date
+            deaths_array.append(int(new_deaths)) 
+            cases_array.append(int(new_cases))
         
+print(f"As of " + recent_date + ", " + county_input + " County has had " + new_deaths + " new deaths due to COVID-19")
+print(f"The brings the total number of deaths in " + county_input + " County to " + str(total_deaths))
 
-
-
+length_array = len(deaths_array) - 1
+print(deaths_array[length_array])
