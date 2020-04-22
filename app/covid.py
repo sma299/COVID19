@@ -6,16 +6,16 @@ from datetime import date
 import csv
 import urllib.request
 
-# get the date in order to do the calculations
+# get the date
 today = date.today() 
-print("Current day:", today.day)
 
 # intro to the system
-print("Welcome to the COVID-19 county tracker.")
+print("WELCOME TO THE COVID-19 COUNTY TRACKER.")
 print("---------------------------------------")
 
-# ask user to input a county
-county_input = input("Please input your state county here: ") #the resulting value is a string
+# ask user to input a state and county (the result will be a string)
+state_input = input("Please input your state here (ex. California): ")
+county_input = input("Please input your county here (ex. Mercer): ") 
 
 # this is the url that contains all of the county information
 url = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
@@ -31,17 +31,21 @@ file_name = os.path.join(os.path.dirname(__file__),"..", "data", "nytdata.csv")
 with open(file_name, 'wb') as f:
     f.write(data)
 
+# define total_deaths as an integer
+total_deaths = 0
+
 # parse through that data using the CSV module
-# ['date', 'county', 'state', 'fips', 'cases', 'deaths']
+# headings ['date', 'county', 'state', 'fips', 'cases', 'deaths']
 with open(file_name, 'r') as f2:
     csv_file_reader = csv.DictReader(f2)
     for row in csv_file_reader:
         if row["county"] == county_input:
-            county_deaths = row["deaths"] 
+            total_deaths = total_deaths + int(row["deaths"]) 
+            new_deaths = row["deaths"]
             recent_date = row["date"]
-    for entry in csv_file_reader:
-        if entry["date"] == recent_date and row["county"] == county_input:
-            print("Number of deaths as of " + recent_date)
+    
+print(f"As of " + recent_date + ", " + county_input + " County has had " + new_deaths + " new deaths")
+print(f"The brings the total number of deaths in " + county_input + " County to " + str(total_deaths))
         
 
 
