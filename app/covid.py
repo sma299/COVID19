@@ -5,9 +5,6 @@ import os
 import datetime
 import csv
 import urllib.request
-from dotenv import load_dotenv
-
-load_dotenv()
 
 # get the date
 today = datetime.datetime.today()
@@ -35,8 +32,9 @@ file_name = os.path.join(os.path.dirname(__file__),"..", "data", "nytdata.csv")
 with open(file_name, 'wb') as f:
     f.write(data)
 
-# define total_deaths as an integer
+# define variables and arrays
 total_deaths = 0
+total_cases = 0
 deaths_array = []
 cases_array = []
 
@@ -46,22 +44,37 @@ with open(file_name, 'r') as f2:
     csv_file_reader = csv.DictReader(f2)
     for row in csv_file_reader:
         if row["county"] == county_input and row["state"] == state_input:
-            total_deaths = total_deaths + int(row["deaths"]) # this will calculate total deaths
-            new_cases = row["cases"] # most recent
+            total_deaths = total_deaths + int(row["deaths"]) # calculate totals
+            total_cases = total_cases + int(row["cases"]) 
+            new_cases = row["cases"] # most recent case count
             new_deaths = row["deaths"] # most recent death count 
-            recent_date = row["date"] # find the most recent date
-            deaths_array.append(int(new_deaths)) 
+            recent_date = row["date"] # most recent date the CSV file has been updated for that county
+            deaths_array.append(int(new_deaths)) # append to arrays
             cases_array.append(int(new_cases))
 
 # output message with summary of data
 print(f"As of " + recent_date + ", " + county_input + " County has had " + new_deaths + " new deaths due to COVID-19")
 print(f"The brings the total number of deaths in " + county_input + " County to " + str(total_deaths))
 
+# find the length of the arrays and two-week extremes
+len_deaths = len(deaths_array)
+two_weeks_deaths = deaths_array[len_deaths - 15]
 
-len_deaths = len(deaths_array) - 1
-two_weeks_deaths = deaths_array[len_deaths - 14]
+len_cases = len(cases_array)
+two_weeks_cases = cases_array[len_cases - 15]
 
-len_cases = len(cases_array) - 1
-two_weeks_cases = cases_array[len_cases - 14]
+percent_cases = (two_weeks_cases - int(new_cases))/two_weeks_cases
+percent_deaths = (two_weeks_deaths - int(new_deaths))/two_weeks_deaths
 
+# find the average of deaths and cases over the 14-day period
+i = 1
+loop_deaths = 0
+loop_cases = 0
 
+while i < 15:
+    loop_deaths = loop_deaths + deaths_array[len_deaths - i]
+    loop_cases = loop_cases = cases_array[len_cases - i]
+    i = i + 1
+
+average_deaths = loop_deaths/14
+average_cases = loop_cases/14
