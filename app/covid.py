@@ -5,6 +5,11 @@ import os
 import datetime
 import csv
 import urllib.request
+from dotenv import load_dotenv
+
+#from app import APP_ENV
+
+load_dotenv()
 
 # get the date
 today = datetime.datetime.today()
@@ -40,6 +45,8 @@ total_deaths = 0
 total_cases = 0
 deaths_array = []
 cases_array = []
+states_array = []
+counties_array = []
 
 # parse through that data using the CSV module
 # headings ['date', 'county', 'state', 'fips', 'cases', 'deaths']
