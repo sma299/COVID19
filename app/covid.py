@@ -57,26 +57,23 @@ with open(file_name, 'r') as f2:
 
 # output message with summary of data
 print(f"As of " + recent_date + ", " + county_input + " County has had " + new_deaths + " new deaths due to COVID-19")
-print(f"The brings the total number of deaths in " + county_input + " County to " + str(total_deaths))
+print(f"Also, the number of new cases is " + new_cases + " cases")
+print("---------------------------------------")
+print(f"Total number of deaths: "+ str(total_deaths))
+print(f"Total number of cases: " + str(total_cases))
 print("---------------------------------------")
 
 
-# find the length of the arrays and two-week extremes
+# find the length of the arrays
 len_deaths = len(deaths_array)
-two_weeks_deaths = deaths_array[len_deaths - 15]
-
 len_cases = len(cases_array)
-two_weeks_cases = cases_array[len_cases - 15]
-
-percent_cases = (two_weeks_cases - int(new_cases))/two_weeks_cases
-percent_deaths = (two_weeks_deaths - int(new_deaths))/two_weeks_deaths
 
 # find the average of deaths and cases over the 14-day period
 i = 1
 loop_deaths = 0
 loop_cases = 0
-percent_increase = 0
-percent_decrease = 0
+percent_deaths = 0
+percent_cases = 0
 
 # while loop to add values from the array to a number that can be divided to find the average
 while i < 15:
@@ -88,19 +85,38 @@ while i < 15:
 average_deaths = round(loop_deaths/14,2)
 average_cases = round(loop_cases/14,2)
 
-print(f"Two weeks ago, the number of deaths in " + county_input + " County was " + str(two_weeks_deaths))
 print(f"The average number of deaths over these two weeks is " + str(average_deaths))
+print(f"The average number of cases is " + str(average_cases))
 print("---------------------------------------")
 
+# if statement to determine if percent of deaths has increased or decreased
 if average_deaths > int(new_deaths):
-    percent_decrease = average_deaths - int(new_deaths)
-    percent_decrease = percent_decrease/average_deaths
-    percent_decrease = percent_decrease * 100
-    percent_decrease = round(percent_decrease, 2)
-    print(f"Fortunately, this means that deaths have decreased by " + str(percent_decrease) + " percent")
+    percent_deaths = average_deaths - int(new_deaths)
+    percent_deaths = percent_deaths/average_deaths
+    percent_deaths = percent_deaths * 100
+    percent_deaths = round(percent_deaths, 2)
+    print(f"Fortunately, this means that deaths have decreased by " + str(percent_deaths) + " percent")
 else:
-    percent_increase = int(new_deaths) - average_deaths
-    percent_increase = percent_increase/average_deaths
-    percent_increase = percent_increase * 100
-    percent_increase = round(percent_increase, 2)
-    print(f"Unfortunately, this means that deaths have increased by " + str(percent_increase) + " percent")
+    percent_deaths = int(new_deaths) - average_deaths
+    percent_deaths = percent_deaths/average_deaths
+    percent_deaths = percent_deaths * 100
+    percent_deaths = round(percent_deaths, 2)
+    print(f"Unfortunately, this means that deaths have increased by " + str(percent_deaths) + " percent")
+
+# if statement to determine if percent of cases has increased or decreased
+if average_cases > int(new_cases):
+    percent_cases = average_cases - int(new_cases)
+    percent_cases = percent_cases/average_cases
+    percent_cases = percent_cases * 100
+    percent_cases = round(percent_cases, 2)
+    print(f"Cases have decreased by " + str(percent_cases) + " percent")
+else:
+    percent_cases = int(new_cases) - average_cases
+    percent_cases = percent_cases/average_cases
+    percent_cases = percent_cases * 100
+    percent_cases = round(percent_cases, 2)
+    print(f"Cases have increased by " + str(percent_cases) + " percent")
+
+# print a final goodbye message
+print("---------------------------------------")
+print("Thank you for using the COVID-19 County Tracker")
