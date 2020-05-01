@@ -1,0 +1,19 @@
+{% extends "layout_bootstrap.html" %}
+{% set active_page = "weather_form" %}
+
+{% block content %}
+
+    <h2>State and County Form</h2>
+
+    <p>Request information based on your state and county...</p>
+
+    <form action="/weather/forecast" method="POST">
+
+        <label>Zip Code:</label>
+        <input type="text" name="zip_code" placeholder="20057" value="20057">
+        <br>
+
+        <button>Submit</button>
+    </form>
+
+{% endblock %}
