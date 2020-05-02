@@ -7,7 +7,7 @@ import csv
 import urllib.request
 from dotenv import load_dotenv
 
-#from app import APP_ENV
+from app import APP_ENV
 
 load_dotenv()
 
