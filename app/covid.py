@@ -11,34 +11,37 @@ from app import APP_ENV
 
 load_dotenv()
 
-# get the date
-today = datetime.datetime.today()
-
-# intro to the system
-print("WELCOME TO THE COVID-19 COUNTY TRACKER.")
-print("REQUEST AT: " + today.strftime("%Y-%m-%d %I:%M %p"))
-print("---------------------------------------")
+STATE = os.getenv("STATE", default="California")
+COUNTY = os.getenv("COUNTRY_CODE", default="Orange")
 
 #TODO: add in data validation
 
-# ask user to input a state and county (the result will be a string)
-state_input = input("Please input your state here (ex. California): ")
-county_input = input("Please input your county here (ex. Mercer): ") 
-print("---------------------------------------")
 
-# this is the url that contains all of the county information
-url = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
+def get_covid_data()
+    """
+    WHAT IT DOES: 
 
-# use the urllib.request (more information here: https://docs.python.org/3/howto/urllib2.html)
-response = urllib.request.urlopen(url)
-data = response.read()
+    PARAMETERS: 
 
-# using the nytdata in data folder to store information
-file_name = os.path.join(os.path.dirname(__file__),"..", "data", "nytdata.csv")
+    RETURNS: 
+    """
+    # this is the url that contains all of the county information
+    url = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
 
-# write the data to a file
-with open(file_name, 'wb') as f:
-    f.write(data)
+    # use the urllib.request (more information here: https://docs.python.org/3/howto/urllib2.html)
+    response = urllib.request.urlopen(url)
+    data = response.read()
+
+    # using the nytdata in data folder to store information
+    file_name = os.path.join(os.path.dirname(__file__),"..", "data", "nytdata.csv")
+
+    # write the data to a file
+    with open(file_name, 'wb') as f:
+        f.write(data)
+
+    return file_name
+
+
 
 # define variables and arrays
 total_deaths = 0
@@ -125,5 +128,5 @@ else:
     print(f"Cases have increased by " + str(percent_cases) + " percent")
 
 # print a final goodbye message
-print("---------------------------------------")
-print("Thank you for using the COVID-19 County Tracker")
+#print("---------------------------------------")
+#print("Thank you for using the COVID-19 County Tracker")

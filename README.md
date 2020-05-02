@@ -30,7 +30,7 @@ Run the python script
 Example
 ```sh
 python app/covid.py
-python -m app.covid # need to ask about this
+python -m app.covid
 ```
 Run it using Heroku
 ```sh
