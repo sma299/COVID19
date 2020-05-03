@@ -1,59 +1,58 @@
 # this is the main python file that will conduct all of my CSV operations
 
 # import statements
-import os
-from datetime import date
-import csv
-import urllib.request
-from dotenv import load_dotenv
-from app import APP_ENV
-from app.email_service import send_email
 
+import os 
+from datetime import date # to get the date for the email
+import csv # to process the csv file
+import urllib.request # to open the URL (could also use the requests package)
+from dotenv import load_dotenv # to load the env file and get encrypted info
+from app import APP_ENV 
+from app.email_service import send_email # use the sendgrid package to send email
+
+# help to load all of the .env info
 load_dotenv()
 
+# encrypted info and the defaults
 STATE = os.getenv("STATE", default="California")
 COUNTY = os.getenv("COUNTRY_CODE", default="Orange")
 MY_NAME = os.getenv("MY_NAME", default="Hottest Person in the World")
 
-def get_data()
+def get_data():
     """
-    WHAT IT DOES: 
+    WHAT IT DOES: This function gathers the data from the NYTimes County Database
 
-    PARAMETERS: 
+    PARAMETERS: N/A
 
-    RETURNS: 
+    RETURNS: Returns a CSV filename that can be used in conjunction with the DictReader function
     """
     # this is the url that contains all of the county information
     url = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
-
     # use the urllib.request (more information here: https://docs.python.org/3/howto/urllib2.html)
     response = urllib.request.urlopen(url)
     data = response.read()
-
     # using the nytdata in data folder to store information
     file_name = os.path.join(os.path.dirname(__file__),"..", "data", "nytdata.csv")
-
     # write the data to a file
     with open(file_name, 'wb') as f:
         f.write(data)
-
     return file_name
 
-def data_validation()
+def data_validation(STATE, COUNTY, states_array, counties_array):
     """
-    WHAT IT DOES: 
+    WHAT IT DOES: Processes the State and County variables to ensure that they exist in the database. 
 
-    PARAMETERS: 
+    PARAMETERS: A state string, a county string, a state array of strings, a county array of strings
 
-    RETURNS: 
+    RETURNS: A message string with any errors
     """
     #TODO: add in data validation
 
-def average_deaths(deaths_array)
+def average_deaths(deaths_array):
     """
-    WHAT IT DOES: 
+    WHAT IT DOES: Averages out the number of deaths over the last 14 days
 
-    PARAMETERS: 
+    PARAMETERS: An deaths array of integers
 
     RETURNS: 
     """
@@ -67,13 +66,13 @@ def average_deaths(deaths_array)
 
     return average_deaths
 
-def average_cases(cases_array)
+def average_cases(cases_array):
     """
-    WHAT IT DOES: 
+    WHAT IT DOES: Averages out the number of cases over the last 14 days
 
-    PARAMETERS: 
+    PARAMETERS: A cases array of integers
 
-    RETURNS: 
+    RETURNS: An integer of the average amount of cases
     """
     len_cases = len(cases_array)
     i = 1
@@ -85,13 +84,13 @@ def average_cases(cases_array)
 
     return average_cases
 
-def death_change(average_deaths, new_deaths)
+def death_change(average_deaths, new_deaths):
     """
-    WHAT IT DOES: 
+    WHAT IT DOES: Calculates if the newest number of deaths is less than or greater than the average deaths over 14 days
 
-    PARAMETERS: 
+    PARAMETERS: An average deaths integer, a new deaths integer
 
-    RETURNS: 
+    RETURNS: A string message with the percent increase or decrease of deaths
     """
     percent_deaths = 0
     message = " "
@@ -112,13 +111,13 @@ def death_change(average_deaths, new_deaths)
 
     return message
 
-def cases_change(average_cases, new_cases)
+def cases_change(average_cases, new_cases):
     """
-    WHAT IT DOES: 
+    WHAT IT DOES: Calculates if the newest number of deaths is less than or greater than the average deaths over 14 days.
 
-    PARAMETERS: 
+    PARAMETERS: An average deaths integer, a new deaths integer
 
-    RETURNS: 
+    RETURNS: A string message with the percent increase or decrease of deaths
     """
 
     percent_cases = 0
@@ -139,6 +138,10 @@ def cases_change(average_cases, new_cases)
         message += "Cases have increased by " + str(percent_cases) + " percent"
     
     return message
+
+
+
+
 
 
 if __name__ == "__main__":
