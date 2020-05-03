@@ -7,7 +7,7 @@ from datetime import date # to get the date for the email
 import csv # to process the csv file
 import urllib.request # to open the URL (could also use the requests package)
 from dotenv import load_dotenv # to load the env file and get encrypted info
-#from app import APP_ENV 
+from app import APP_ENV 
 from app.email_service import send_email # use the sendgrid package to send email
 
 # help to load all of the .env info
@@ -17,7 +17,6 @@ load_dotenv()
 STATE = os.getenv("STATE", default="California")
 COUNTY = os.getenv("COUNTRY_CODE", default="Orange")
 MY_NAME = os.getenv("MY_NAME", default="Hottest Person in the World")
-APP_ENV = "development" # might need to get rid of this
 
 def get_data():
     """
