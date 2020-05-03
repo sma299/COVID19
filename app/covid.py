@@ -74,7 +74,6 @@ def data_validation(state_input, county_input, states_array, counties_array):
     found_it = False
     i = len(states_array) - 1
 
-    # first check: make sure that the state and county exist
     if state_input in states_array and county_input in counties_array:
         while i >= 0 and found_it == False:
             if states_array[i] == state_input and counties_array[i] == county_input:
