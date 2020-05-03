@@ -1,5 +1,5 @@
 # COVID
-This application tracks COVID-19 statistics by US County over time and makes recommendations about potentially reopening the economy.
+This application tracks COVID-19 data by US county over time and emails the user a summary of the statistics.
 
 ## Instructions for the Project:
 https://github.com/prof-rossetti/intro-to-python/tree/master/projects/freestyle
@@ -29,7 +29,6 @@ Run the python script
 
 Example
 ```sh
-python app/covid.py
 python -m app.covid
 ```
 Run it using Heroku

@@ -42,15 +42,47 @@ def get_data():
 
     return file_name
 
-def data_validation(STATE, COUNTY, states_array, counties_array):
+def string_validation(state_input, county_input):
     """
-    WHAT IT DOES: Processes the State and County variables to ensure that they exist in the database. 
+    WHAT IT DOES: Processes the State and County variables to ensure that they are strings
 
-    PARAMETERS: A state string, a county string, a state array of strings, a county array of strings
+    PARAMETERS: N/A
 
     RETURNS: A message string with any errors
     """
-    #TODO: add in data validation
+    message = " "
+
+    while True:
+        try:
+            STATE = str(state_input)
+            COUNTY = str(county_input)
+            break
+        except ValueError:
+            message += "ERROR: Your input cannot be an integer"
+    
+    return message
+
+
+def data_validation(state_input, county_input, states_array, counties_array):
+    """
+    WHAT IT DOES: Processes the State and County variables to ensure that they actually exist
+
+    PARAMETERS: two strings, two arrays of string variables
+
+    RETURNS: A boolean
+    """
+    found_it = False
+    i = len(states_array) - 1
+
+    # first check: make sure that the state and county exist
+    if state_input in states_array and county_input in counties_array:
+        while i >= 0 and found_it == False:
+            if states_array[i] == state_input and counties_array[i] == county_input:
+                found_it = True
+            i = i - 1
+
+    return found_it
+
 
 def average_deaths(deaths_array):
     """
@@ -150,6 +182,7 @@ if __name__ == "__main__":
     if APP_ENV == "development":
         state_input = input("PLEASE INPUT A STATE (e.g. California): ")
         county_input = input("PLEASE INPUT A COUNTY (e.g. Orange): ")
+        string_validation(state_input, county_input)
     else:
         state_input = STATE
         county_input = COUNTY
@@ -164,11 +197,11 @@ if __name__ == "__main__":
 
     # parse through that data using the CSV module
     # headings ['date', 'county', 'state', 'fips', 'cases', 'deaths']
-    with open(file_name, 'r') as f2:
+    with open(get_data(), 'r') as f2:
         csv_file_reader = csv.DictReader(f2)
         for row in csv_file_reader:
             states_array.append(row["state"]) 
-            counties_array.append(row["county"])
+            counties_array.append(row["county"]) 
             if row["county"] == county_input and row["state"] == state_input:
                 total_deaths = total_deaths + int(row["deaths"]) # int
                 total_cases = total_cases + int(row["cases"]) # int
@@ -177,38 +210,41 @@ if __name__ == "__main__":
                 recent_date = row["date"] # string, most recent date the CSV file has been updated for that county
                 deaths_array.append(int(new_deaths))
                 cases_array.append(int(new_cases))
+
+    # data validation to make sure the state and county exist!
+    if data_validation(state_input, county_input, states_array, counties_array) == True:
             
-    # start the email
-    html = ""
-    html += f"<h3>Good Morning, {MY_NAME}!</h3>"
+        # start the email
+        html = ""
+        html += f"<h3>Good Morning, {MY_NAME}!</h3>"
 
-    html += "<h4>Today's Date</h4>"
-    html += f"<p>{date.today().strftime('%A, %B %d, %Y')}</p>"
+        html += "<h4>Today's Date</h4>"
+        html += f"<p>{date.today().strftime('%A, %B %d, %Y')}</p>"
 
-    html += f"<h4>COVID-19 COUNTY STATISTICS for {county_input} County, {state_input}.</h4>"
-    html += "<ul>"
-    for hourly in weather_results["hourly_forecasts"]:
-        html += f"<li>{hourly['timestamp']} | {hourly['temp']} | {hourly['conditions'].upper()}</li>"
-    html += "</ul>"
+        html += f"<h4>COVID-19 COUNTY STATISTICS for {county_input} County, {state_input}:</h4>"
 
-    # output message with summary of data
-    html += f"<h4>As of {recent_date}, {county_input} County has had {new_deaths} new deaths due to COVID-19</h4>"
-    html += f"<h4>Also, the number of new cases is {new_cases} cases</h4>"
-    html += f"<h4>---------------------------------------</h4>"
+        # output message with summary of data
+        html += f"<p>As of {recent_date}, {county_input} County has had {new_deaths} new deaths due to COVID-19<p>"
+        html += f"<p>Also, the number of new cases in {county_input} County is {new_cases}<p>"
+        html += f"<h4>---------------------------------------</h4>"
 
-    html += "</ul>"
-    html += f"<li>Total number of deaths: {str(total_deaths)}</li>"
-    html += f"<li>Total number of cases: {str(total_cases)}</li>"
-    html += f"<li>Average number of deaths over two weeks: {average_deaths(deaths_array)}</li>"
-    html += f"<li>Average number of cases over two weeks: {average_cases(cases_array)}</li>"
-    html += "</ul>"
+        html += "</ul>"
+        html += f"<li>Total number of deaths: {str(total_deaths)}</li>"
+        html += f"<li>Total number of cases: {str(total_cases)}</li>"
+        html += f"<li>Average number of deaths over two weeks: {average_deaths(deaths_array)}</li>"
+        html += f"<li>Average number of cases over two weeks: {average_cases(cases_array)}</li>"
+        html += "</ul>"
 
-    html += f"<h4>{deaths_change(average_deaths(deaths_array), new_deaths)}</h4>"
-    html += f"<h4>{cases_change(average_cases(cases_array), new_cases)}</h4>"
-    html += f"<h4>---------------------------------------</h4>"
+        html += f"<h4>---------------------------------------</h4>"
 
+        html += f"<p>{deaths_change(average_deaths(deaths_array), new_deaths)}<p>"
+        html += f"<p>{cases_change(average_cases(cases_array), new_cases)}<p>"
 
-    # print a final goodbye message
-    html += "<h3>Thank you for using the COVID-19 County Tracker</h3>"
+        # print a final goodbye message
+        html += "<h3>Thank you for using the COVID-19 County Tracker.</h3>"
 
-    send_email(subject="COVID-19 Daily County Report", html=html)
+        # send the email
+        send_email(subject="COVID-19 Daily County Report", html=html)
+
+    else: # error message
+        print("Unfortunately, that state and county combination does not exist in our database. Please try again.")
