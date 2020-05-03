@@ -7,7 +7,7 @@ from datetime import date # to get the date for the email
 import csv # to process the csv file
 import urllib.request # to open the URL (could also use the requests package)
 from dotenv import load_dotenv # to load the env file and get encrypted info
-from app import APP_ENV 
+#from app import APP_ENV 
 from app.email_service import send_email # use the sendgrid package to send email
 
 # help to load all of the .env info
@@ -17,6 +17,7 @@ load_dotenv()
 STATE = os.getenv("STATE", default="California")
 COUNTY = os.getenv("COUNTRY_CODE", default="Orange")
 MY_NAME = os.getenv("MY_NAME", default="Hottest Person in the World")
+APP_ENV = "development" # might need to get rid of this
 
 def get_data():
     """
@@ -29,13 +30,17 @@ def get_data():
     # this is the url that contains all of the county information
     url = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
     # use the urllib.request (more information here: https://docs.python.org/3/howto/urllib2.html)
+
     response = urllib.request.urlopen(url)
     data = response.read()
+
     # using the nytdata in data folder to store information
     file_name = os.path.join(os.path.dirname(__file__),"..", "data", "nytdata.csv")
+
     # write the data to a file
     with open(file_name, 'wb') as f:
         f.write(data)
+
     return file_name
 
 def data_validation(STATE, COUNTY, states_array, counties_array):
@@ -54,7 +59,7 @@ def average_deaths(deaths_array):
 
     PARAMETERS: An deaths array of integers
 
-    RETURNS: 
+    RETURNS: An integer of the average amount of deaths
     """
     len_deaths = len(deaths_array)
     i = 1
@@ -84,7 +89,7 @@ def average_cases(cases_array):
 
     return average_cases
 
-def death_change(average_deaths, new_deaths):
+def deaths_change(average_deaths, new_deaths):
     """
     WHAT IT DOES: Calculates if the newest number of deaths is less than or greater than the average deaths over 14 days
 
@@ -140,18 +145,15 @@ def cases_change(average_cases, new_cases):
     return message
 
 
-
-
-
-
 if __name__ == "__main__":
 
+    # should the state/county be input or default? If in development, then input
     if APP_ENV == "development":
         state_input = input("PLEASE INPUT A STATE (e.g. California): ")
         county_input = input("PLEASE INPUT A COUNTY (e.g. Orange): ")
-        weather_results = get_hourly_forecasts(state=state_input, county=county_input) # invoke with custom params
     else:
-        weather_results = get_hourly_forecasts() # invoke with default params
+        state_input = STATE
+        county_input = COUNTY
 
     # define variables and arrays
     total_deaths = 0 # int
@@ -166,17 +168,18 @@ if __name__ == "__main__":
     with open(file_name, 'r') as f2:
         csv_file_reader = csv.DictReader(f2)
         for row in csv_file_reader:
-            states_array.append(row["state"]) # for data validation
+            states_array.append(row["state"]) 
+            counties_array.append(row["county"])
             if row["county"] == county_input and row["state"] == state_input:
-                total_deaths = total_deaths + int(row["deaths"]) # calculate totals
-                total_cases = total_cases + int(row["cases"]) 
-                new_cases = row["cases"] # most recent case count
-                new_deaths = row["deaths"] # most recent death count 
-                recent_date = row["date"] # most recent date the CSV file has been updated for that county
-                deaths_array.append(int(new_deaths)) # append to arrays
+                total_deaths = total_deaths + int(row["deaths"]) # int
+                total_cases = total_cases + int(row["cases"]) # int
+                new_deaths = row["deaths"] # string, most recent death count
+                new_cases = row["cases"] # string, most recent case count
+                recent_date = row["date"] # string, most recent date the CSV file has been updated for that county
+                deaths_array.append(int(new_deaths))
                 cases_array.append(int(new_cases))
-
-
+            
+    # start the email
     html = ""
     html += f"<h3>Good Morning, {MY_NAME}!</h3>"
 
@@ -190,19 +193,23 @@ if __name__ == "__main__":
     html += "</ul>"
 
     # output message with summary of data
-    print(f"As of " + recent_date + ", " + county_input + " County has had " + new_deaths + " new deaths due to COVID-19")
-    print(f"Also, the number of new cases is " + new_cases + " cases")
-    print("---------------------------------------")
-    print(f"Total number of deaths: "+ str(total_deaths))
-    print(f"Total number of cases: " + str(total_cases))
-    print("---------------------------------------")
-    
-    print(f"The average number of deaths over these two weeks is " + str(average_deaths))
-    print(f"The average number of cases is " + str(average_cases))
-    print("---------------------------------------")
+    html += f"<h4>As of {recent_date}, {county_input} County has had {new_deaths} new deaths due to COVID-19</h4>"
+    html += f"<h4>Also, the number of new cases is {new_cases} cases</h4>"
+    html += f"<h4>---------------------------------------</h4>"
+
+    html += "</ul>"
+    html += f"<li>Total number of deaths: {str(total_deaths)}</li>"
+    html += f"<li>Total number of cases: {str(total_cases)}</li>"
+    html += f"<li>Average number of deaths over two weeks: {average_deaths(deaths_array)}</li>"
+    html += f"<li>Average number of cases over two weeks: {average_cases(cases_array)}</li>"
+    html += "</ul>"
+
+    html += f"<h4>{deaths_change(average_deaths(deaths_array), new_deaths)}</h4>"
+    html += f"<h4>{cases_change(average_cases(cases_array), new_cases)}</h4>"
+    html += f"<h4>---------------------------------------</h4>"
+
 
     # print a final goodbye message
-    print("---------------------------------------")
-    print("Thank you for using the COVID-19 County Tracker")
+    html += "<h3>Thank you for using the COVID-19 County Tracker</h3>"
 
     send_email(subject="COVID-19 Daily County Report", html=html)
