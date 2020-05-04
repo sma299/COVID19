@@ -1,20 +1,7 @@
 import pytest # for pytest.raises (see: https://docs.pytest.org/en/latest/assert.html)
+import csv
 
-from app.covid import get_data, string_validation, data_validation, average_deaths, average_cases, deaths_change, cases_change
-
-#CI_ENV = os.environ.get("CI") == "true" 
-#@pytest.mark.skipif(CI_ENV==True, reason="to avoid configuring credentials on, and issuing requests from, the CI server")
-
-def test_get_data():
-    # test to ensure data is getting written to local CSV sheet and file_name is a string
-
-    # INVOCATION
-    assert get_data() == "nytdata.csv"
-
-    with open(get_data(), 'r') as file:
-        csv_file_reader = csv.DictReader(file)
-        # INVOCATION
-        assert isinstance(csv_file_reader, dict)
+from app.covid import string_validation, data_validation, average_deaths, average_cases, deaths_change, cases_change
 
 def test_string_validation():
     # test to ensure state and county inputs are strings, not integers
@@ -70,15 +57,15 @@ def test_deaths_change():
 
     # INVOCATION
     result = deaths_change(average_deaths, new_deaths)
-    self.assertIn("75.00", result)
+    assert "75.0" in result
 
 def test_cases_change():
     # test to ensure percent of deaths increases or decreases by the proper percentage
-    
+
     result = " "
     average_cases = 40
     new_cases = "10"
 
     # INVOCATION
     result = cases_change(average_cases, new_cases)
-    self.assertIn("75.00", result)
+    assert "75.0" in result
