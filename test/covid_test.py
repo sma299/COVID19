@@ -1,9 +1,5 @@
 import pytest # for pytest.raises (see: https://docs.pytest.org/en/latest/assert.html)
 
-CI_ENV = os.environ.get("CI") == "true" # expect default environment variable setting of "CI=true" on Travis CI, see: https://docs.travis-ci.com/user/environment-variables/#default-environment-variables
-
-@pytest.mark.skipif(CI_ENV==True, reason="to avoid configuring credentials on, and issuing requests from, the CI server")
-
 from app.covid import string_validation, data_validation, average_deaths, average_cases, deaths_change, cases_change
 
 def test_string_validation():
