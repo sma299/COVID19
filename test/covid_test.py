@@ -52,7 +52,7 @@ def test_deaths_change():
 
     result = " "
     average_deaths = 40
-    new_deaths = "10"
+    new_deaths = 10
 
     # INVOCATION
     result = deaths_change(average_deaths, new_deaths)
@@ -63,7 +63,7 @@ def test_cases_change():
 
     result = " "
     average_cases = 40
-    new_cases = "10"
+    new_cases = 10
 
     # INVOCATION
     result = cases_change(average_cases, new_cases)
