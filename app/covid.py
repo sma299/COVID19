@@ -135,13 +135,13 @@ def deaths_change(average_deaths, new_deaths):
         percent_deaths = percent_deaths/average_deaths
         percent_deaths = percent_deaths * 100
         percent_deaths = round(percent_deaths, 2)
-        message += "Fortunately, this means that deaths have decreased by " + str(percent_deaths) + "%"
+        message += "Fortunately, this means that deaths have decreased by " + str(percent_deaths) + "%."
     else:
         percent_deaths = int(new_deaths) - average_deaths
         percent_deaths = percent_deaths/average_deaths
         percent_deaths = percent_deaths * 100
         percent_deaths = round(percent_deaths, 2)
-        message += "\nUnfortunately, this means that deaths have increased by " + str(percent_deaths) + "%"
+        message += "\nUnfortunately, this means that deaths have increased by " + str(percent_deaths) + "%."
 
     return message
 
@@ -163,15 +163,25 @@ def cases_change(average_cases, new_cases):
         percent_cases = percent_cases/average_cases
         percent_cases = percent_cases * 100
         percent_cases = round(percent_cases, 2)
-        message += "Cases have decreased by " + str(percent_cases) + " percent"
+        message += "Cases have decreased by " + str(percent_cases) + "%."
     else:
         percent_cases = int(new_cases) - average_cases
         percent_cases = percent_cases/average_cases
         percent_cases = percent_cases * 100
         percent_cases = round(percent_cases, 2)
-        message += "Cases have increased by " + str(percent_cases) + " percent"
+        message += "Cases have increased by " + str(percent_cases) + "%."
     
     return message
+
+def formatting(amount):
+    """
+    WHAT IT DOES: this function turns a number into standard comma notation
+
+    PARAMETERS: passes in a number
+
+    RETURNS: a formatted number string (ex. 5,350.99)
+    """
+    return "{:,}".format(amount)
 
 
 if __name__ == "__main__":
@@ -226,21 +236,21 @@ if __name__ == "__main__":
         html += f"<h4>COVID-19 COUNTY STATISTICS for {county_input} County, {state_input}:</h4>"
 
         # output message with summary of data
-        html += f"<p>As of {recent_date}, {county_input} County has had {new_deaths} new deaths due to COVID-19</p>"
-        html += f"<p>Also, the number of new cases in {county_input} County is {new_cases}</p>"
+        html += f"<p>As of {recent_date}, {county_input} County has had {new_deaths} new deaths due to COVID-19.</p>"
+        html += f"<p>Also, the number of new cases in {county_input} County is {new_cases}.</p>"
         html += f"<h4>---------------------------------------</h4>"
 
         html += "</ul>"
-        html += f"<li>Total number of deaths: {str(total_deaths)}</li>"
-        html += f"<li>Total number of cases: {str(total_cases)}</li>"
-        html += f"<li>Average number of deaths over two weeks: {average_deaths(deaths_array)}</li>"
-        html += f"<li>Average number of cases over two weeks: {average_cases(cases_array)}</li>"
+        html += f"<li>Total number of deaths: {formatting(total_deaths)}</li>"
+        html += f"<li>Total number of cases: {formatting(total_cases)}</li>"
+        html += f"<li>Average number of deaths over two weeks: {formatting(average_deaths(deaths_array))}</li>"
+        html += f"<li>Average number of cases over two weeks: {formatting(average_cases(cases_array))}</li>"
         html += "</ul>"
 
         html += f"<h4>---------------------------------------</h4>"
 
-        html += f"<p>{deaths_change(average_deaths(deaths_array), new_deaths)}<p>"
-        html += f"<p>{cases_change(average_cases(cases_array), new_cases)}<p>"
+        html += f"<p>{deaths_change(average_deaths(deaths_array), new_deaths)}</p>"
+        html += f"<p>{cases_change(average_cases(cases_array), new_cases)}</p>"
 
         # print a final goodbye message
         html += "<h3>Thank you for using the COVID-19 County Tracker.</h3>"
