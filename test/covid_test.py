@@ -62,7 +62,23 @@ def test_average_cases():
     assert average_deaths(cases_array) == 5.0
 
 def test_deaths_change():
-    # test to ensure cases are averaged over two weeks
+    # test to ensure percent of deaths increases or decreases by the proper percentage
 
+    result = " "
+    average_deaths = 40
+    new_deaths = "10"
+
+    # INVOCATION
+    result = deaths_change(average_deaths, new_deaths)
+    self.assertIn("75.00", result)
 
 def test_cases_change():
+    # test to ensure percent of deaths increases or decreases by the proper percentage
+    
+    result = " "
+    average_cases = 40
+    new_cases = "10"
+
+    # INVOCATION
+    result = cases_change(average_cases, new_cases)
+    self.assertIn("75.00", result)
