@@ -14,6 +14,7 @@ cd ~/Documents/GitHub/COVID19
 
 ## Setup
 Create an anaconda virtual environment
+
 Example
 ```sh
 conda activate covid-env
@@ -25,16 +26,39 @@ pip install -r requirements.txt
 ```
 
 ## Usage
-Run the python script
+Run the python script locally
 
 Example
 ```sh
 python -m app.covid
 ```
-Run it using Heroku
+Run it using Heroku - first, you must login using your own account
 ```sh
 heroku login
 ```
+
+Set up the server on Heroku
+```sh
+heroku create covid-app-your-name
+```
+
+Configure your environment variable using Heroku interface OR from the command line
+```sh
+heroku config
+heroku config:set APP_ENV="production"
+heroku config:set SENDGRID_API_KEY="insertAPIkey"
+heroku config:set MY_EMAIL_ADDRESS="insert@email.com"
+heroku config:set MY_NAME="Mr.Krabs"
+heroku config:set STATE="California"
+heroku config:set COUNTY="Orange"
+```
+
+Finally, run the app on the Heroku server
+```sh
+heroku run bash
+python -m app.covid
+```
+
 
 ## Testing
 Install the pytest package within a virtual environment using pip

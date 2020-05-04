@@ -40,7 +40,7 @@ def get_data():
     with open(file_name, 'wb') as f:
         f.write(data)
 
-    return file_name
+    #return file_name
 
 def string_validation(state_input, county_input):
     """
@@ -186,6 +186,8 @@ def formatting(amount):
 
 if __name__ == "__main__":
 
+    get_data()
+
     # should the state/county be input or default? If in development, then input
     if APP_ENV == "development":
         state_input = input("PLEASE INPUT A STATE (e.g. California): ")
@@ -203,10 +205,11 @@ if __name__ == "__main__":
         cases_array = [] # array of ints
         states_array = []  # array of strings
         counties_array = [] # array of strings
+        file_path = os.path.join(os.path.dirname(__file__),"..", "data", "nytdata.csv")
 
         # parse through that data using the CSV module
         # headings ['date', 'county', 'state', 'fips', 'cases', 'deaths']
-        with open(get_data(), 'r') as f2:
+        with open(file_path, 'r') as f2:
             csv_file_reader = csv.DictReader(f2)
             for row in csv_file_reader:
                 states_array.append(row["state"]) 
@@ -260,5 +263,3 @@ if __name__ == "__main__":
 
     else: # error message
         print("Unfortunately, that state and county combination does not exist in our database. Please try again.")
-
-        
