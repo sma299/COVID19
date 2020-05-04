@@ -130,46 +130,46 @@ def deaths_change(average_deaths, new_deaths):
     message = " "
     
     # if statement to determine if percent of deaths has increased or decreased
-    if average_deaths > int(new_deaths):
-        percent_deaths = average_deaths - int(new_deaths)
+    if average_deaths > new_deaths:
+        percent_deaths = average_deaths - new_deaths
         percent_deaths = percent_deaths/average_deaths
         percent_deaths = percent_deaths * 100
         percent_deaths = round(percent_deaths, 2)
-        message += "Fortunately, this means that deaths have decreased by " + str(percent_deaths) + "%."
+        message += "Fortunately, this means that deaths have decreased by " + str(percent_deaths) + "% below the two-week average."
     else:
         percent_deaths = int(new_deaths) - average_deaths
         percent_deaths = percent_deaths/average_deaths
         percent_deaths = percent_deaths * 100
         percent_deaths = round(percent_deaths, 2)
-        message += "\nUnfortunately, this means that deaths have increased by " + str(percent_deaths) + "%."
+        message += "\nUnfortunately, this means that deaths have increased by " + str(percent_deaths) + "% above the two-week average."
 
     return message
 
 def cases_change(average_cases, new_cases):
     """
-    WHAT IT DOES: Calculates if the newest number of deaths is less than or greater than the average deaths over 14 days.
+    WHAT IT DOES: Calculates if the newest number of cases is less than or greater than the average cases over 14 days.
 
-    PARAMETERS: An average deaths integer, a new deaths integer
+    PARAMETERS: An average cases integer, a new cases integer
 
-    RETURNS: A string message with the percent increase or decrease of deaths
+    RETURNS: A string message with the percent increase or decrease of cases
     """
 
     percent_cases = 0
     message = " "
 
     # if statement to determine if percent of cases has increased or decreased
-    if average_cases > int(new_cases):
-        percent_cases = average_cases - int(new_cases)
+    if average_cases > new_cases:
+        percent_cases = average_cases - new_cases
         percent_cases = percent_cases/average_cases
         percent_cases = percent_cases * 100
         percent_cases = round(percent_cases, 2)
-        message += "Cases have decreased by " + str(percent_cases) + "%."
+        message += "Cases have decreased by " + str(percent_cases) + "% below the average."
     else:
-        percent_cases = int(new_cases) - average_cases
+        percent_cases = new_cases - average_cases
         percent_cases = percent_cases/average_cases
         percent_cases = percent_cases * 100
         percent_cases = round(percent_cases, 2)
-        message += "Cases have increased by " + str(percent_cases) + "%."
+        message += "Cases have increased by " + str(percent_cases) + "% above the average."
     
     return message
 
@@ -201,6 +201,8 @@ if __name__ == "__main__":
         # define variables and arrays
         total_deaths = 0 # int
         total_cases = 0 # int
+        new_deaths = 0 # int
+        new_cases = 0 # int
         deaths_array = [] # array of ints
         cases_array = [] # array of ints
         states_array = []  # array of strings
@@ -215,11 +217,15 @@ if __name__ == "__main__":
                 states_array.append(row["state"]) 
                 counties_array.append(row["county"]) 
                 if row["county"] == county_input and row["state"] == state_input:
-                    total_deaths = total_deaths + int(row["deaths"]) # int
-                    total_cases = total_cases + int(row["cases"]) # int
-                    new_deaths = row["deaths"] # string, most recent death count
-                    new_cases = row["cases"] # string, most recent case count
+
+                    new_deaths = int(row["deaths"]) - total_deaths # used to be strings, now are integers
+                    new_cases = int(row["cases"]) - total_cases # used to be strings, now are integers
+
+                    total_deaths = int(row["deaths"]) # int, total death count
+                    total_cases = int(row["cases"]) # int, total case count
+
                     recent_date = row["date"] # string, most recent date the CSV file has been updated for that county
+
                     deaths_array.append(int(new_deaths))
                     cases_array.append(int(new_cases))
     else:
@@ -239,8 +245,8 @@ if __name__ == "__main__":
         html += f"<h4>COVID-19 COUNTY STATISTICS for {county_input} County, {state_input}:</h4>"
 
         # output message with summary of data
-        html += f"<p>As of {recent_date}, {county_input} County has had {new_deaths} new deaths due to COVID-19.</p>"
-        html += f"<p>Also, the number of new cases in {county_input} County is {new_cases}.</p>"
+        html += f"<p>As of {recent_date}, {county_input} County has had {formatting(new_deaths)} new deaths due to COVID-19.</p>"
+        html += f"<p>Also, the number of new cases in {county_input} County is {formatting(new_cases)}.</p>"
         html += f"<h4>---------------------------------------</h4>"
 
         html += "</ul>"
