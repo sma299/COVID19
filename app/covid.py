@@ -46,21 +46,20 @@ def string_validation(state_input, county_input):
     """
     WHAT IT DOES: Processes the State and County variables to ensure that they are strings
 
-    PARAMETERS: N/A
+    PARAMETERS: Two strings representing a state and county in the US
 
-    RETURNS: A message string with any errors
+    RETURNS: A boolean
     """
-    message = " "
+    has_errors = False
 
-    while True:
-        try:
-            STATE = str(state_input)
-            COUNTY = str(county_input)
-            break
-        except ValueError:
-            message += "ERROR: Your input cannot be an integer"
-    
-    return message
+    try:
+        int_variable = int(state_input)
+        int_variable2 = int(county_input)
+        has_errors = True
+    except:
+        pass
+
+    return has_errors
 
 
 def data_validation(state_input, county_input, states_array, counties_array):
@@ -97,7 +96,7 @@ def average_deaths(deaths_array):
     while i < 15:
         loop_deaths = loop_deaths + deaths_array[len_deaths - i]
         i = i + 1
-    average_deaths = round(loop_deaths/14,2)
+    average_deaths = round(loop_deaths/14,0)
 
     return average_deaths
 
@@ -115,7 +114,7 @@ def average_cases(cases_array):
     while i < 15:
         loop_cases = loop_cases + cases_array[len_cases - i]
         i = i + 1
-    average_cases = round(loop_cases/14,2)
+    average_cases = round(loop_cases/14,0)
 
     return average_cases
 
@@ -136,13 +135,13 @@ def deaths_change(average_deaths, new_deaths):
         percent_deaths = percent_deaths/average_deaths
         percent_deaths = percent_deaths * 100
         percent_deaths = round(percent_deaths, 2)
-        message += "Fortunately, this means that deaths have decreased by " + str(percent_deaths) + " percent"
+        message += "Fortunately, this means that deaths have decreased by " + str(percent_deaths) + "%"
     else:
         percent_deaths = int(new_deaths) - average_deaths
         percent_deaths = percent_deaths/average_deaths
         percent_deaths = percent_deaths * 100
         percent_deaths = round(percent_deaths, 2)
-        message += "\nUnfortunately, this means that deaths have increased by " + str(percent_deaths) + " percent"
+        message += "\nUnfortunately, this means that deaths have increased by " + str(percent_deaths) + "%"
 
     return message
 
@@ -181,35 +180,39 @@ if __name__ == "__main__":
     if APP_ENV == "development":
         state_input = input("PLEASE INPUT A STATE (e.g. California): ")
         county_input = input("PLEASE INPUT A COUNTY (e.g. Orange): ")
-        string_validation(state_input, county_input)
     else:
         state_input = STATE
         county_input = COUNTY
+    
+    if string_validation(state_input, county_input) == False:
 
-    # define variables and arrays
-    total_deaths = 0 # int
-    total_cases = 0 # int
-    deaths_array = [] # array of ints
-    cases_array = [] # array of ints
-    states_array = []  # array of strings
-    counties_array = [] # array of strings
+        # define variables and arrays
+        total_deaths = 0 # int
+        total_cases = 0 # int
+        deaths_array = [] # array of ints
+        cases_array = [] # array of ints
+        states_array = []  # array of strings
+        counties_array = [] # array of strings
 
-    # parse through that data using the CSV module
-    # headings ['date', 'county', 'state', 'fips', 'cases', 'deaths']
-    with open(get_data(), 'r') as f2:
-        csv_file_reader = csv.DictReader(f2)
-        for row in csv_file_reader:
-            states_array.append(row["state"]) 
-            counties_array.append(row["county"]) 
-            if row["county"] == county_input and row["state"] == state_input:
-                total_deaths = total_deaths + int(row["deaths"]) # int
-                total_cases = total_cases + int(row["cases"]) # int
-                new_deaths = row["deaths"] # string, most recent death count
-                new_cases = row["cases"] # string, most recent case count
-                recent_date = row["date"] # string, most recent date the CSV file has been updated for that county
-                deaths_array.append(int(new_deaths))
-                cases_array.append(int(new_cases))
-
+        # parse through that data using the CSV module
+        # headings ['date', 'county', 'state', 'fips', 'cases', 'deaths']
+        with open(get_data(), 'r') as f2:
+            csv_file_reader = csv.DictReader(f2)
+            for row in csv_file_reader:
+                states_array.append(row["state"]) 
+                counties_array.append(row["county"]) 
+                if row["county"] == county_input and row["state"] == state_input:
+                    total_deaths = total_deaths + int(row["deaths"]) # int
+                    total_cases = total_cases + int(row["cases"]) # int
+                    new_deaths = row["deaths"] # string, most recent death count
+                    new_cases = row["cases"] # string, most recent case count
+                    recent_date = row["date"] # string, most recent date the CSV file has been updated for that county
+                    deaths_array.append(int(new_deaths))
+                    cases_array.append(int(new_cases))
+    else:
+        print("ERROR: your inputs cannot have integers in it! Please try again.")
+        exit()
+    
     # data validation to make sure the state and county exist!
     if data_validation(state_input, county_input, states_array, counties_array) == True:
             
@@ -223,8 +226,8 @@ if __name__ == "__main__":
         html += f"<h4>COVID-19 COUNTY STATISTICS for {county_input} County, {state_input}:</h4>"
 
         # output message with summary of data
-        html += f"<p>As of {recent_date}, {county_input} County has had {new_deaths} new deaths due to COVID-19<p>"
-        html += f"<p>Also, the number of new cases in {county_input} County is {new_cases}<p>"
+        html += f"<p>As of {recent_date}, {county_input} County has had {new_deaths} new deaths due to COVID-19</p>"
+        html += f"<p>Also, the number of new cases in {county_input} County is {new_cases}</p>"
         html += f"<h4>---------------------------------------</h4>"
 
         html += "</ul>"
@@ -247,3 +250,5 @@ if __name__ == "__main__":
 
     else: # error message
         print("Unfortunately, that state and county combination does not exist in our database. Please try again.")
+
+        
