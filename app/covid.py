@@ -1,6 +1,8 @@
-# this is the main python file that will conduct all of my CSV operations
+# COVID-19 County Tracker
 
-# import statements
+##
+## Module & Package Import
+##
 
 import os 
 from datetime import date # to get the date for the email
@@ -10,13 +12,19 @@ from dotenv import load_dotenv # to load the env file and get encrypted info
 from app import APP_ENV 
 from app.email_service import send_email # use the sendgrid package to send email
 
-# help to load all of the .env info
+##
+## Get Environment Variables
+##
+
 load_dotenv()
 
-# encrypted info and the defaults
 STATE = os.getenv("STATE", default="California")
 COUNTY = os.getenv("COUNTRY_CODE", default="Orange")
 MY_NAME = os.getenv("MY_NAME", default="Hottest Person in the World")
+
+##
+## Begin Functions 
+##
 
 def get_data():
     """
@@ -39,8 +47,6 @@ def get_data():
     # write the data to a file
     with open(file_name, 'wb') as f:
         f.write(data)
-
-    #return file_name
 
 def string_validation(state_input, county_input):
     """
@@ -183,6 +189,9 @@ def formatting(amount):
     """
     return "{:,}".format(amount)
 
+##
+## If Name == Main
+##
 
 if __name__ == "__main__":
 
@@ -234,8 +243,11 @@ if __name__ == "__main__":
     
     # data validation to make sure the state and county exist!
     if data_validation(state_input, county_input, states_array, counties_array) == True:
+
+        ##
+        ## HTML Object for Email
+        ##
             
-        # start the email
         html = ""
         html += f"<h3>Good Morning, {MY_NAME}!</h3>"
 
