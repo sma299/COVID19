@@ -12,6 +12,10 @@ from dotenv import load_dotenv # to load the env file and get encrypted info
 from app import APP_ENV 
 from app.email_service import send_email # use the sendgrid package to send email
 
+import plotly
+import plotly.graph_objects as go
+import plotly.io as pio
+
 ##
 ## Get Environment Variables
 ##
@@ -21,6 +25,13 @@ load_dotenv()
 STATE = os.getenv("STATE", default="California")
 COUNTY = os.getenv("COUNTRY_CODE", default="Orange")
 MY_NAME = os.getenv("MY_NAME", default="Hottest Person in the World")
+
+# plotly credential setup
+#PLOTLY_USER_NAME = os.environ.get("PLOTLY_USER_NAME")
+#PLOTLY_API_KEY = os.environ.get("PLOTLY_API_KEY")
+
+#plotly.tools.set_credentials_file(username=PLOTLY_USER_NAME, api_key=PLOTLY_API_KEY)
+
 
 ##
 ## Begin Functions 
@@ -276,8 +287,20 @@ if __name__ == "__main__":
         # print a final goodbye message
         html += "<h3>Thank you for using the COVID-19 County Tracker.</h3>"
 
+        fig = go.Figure(go.Scatter(x=[] y=deaths_array)
+        fig.update_layout(title_text="COVID-19 COUNTY TRACKER OVER TWO-WEEK PERIOD")
+        html += pio.write_html(fig, file='county_tracker.html', auto_open=False)
+
         # send the email
         send_email(subject="COVID-19 Daily County Report", html=html)
 
     else: # error message
         print("Unfortunately, that state and county combination does not exist in our database. Please try again.")
+
+#fig = go.Figure(go.Scatter(x=[] y=deaths_array)
+#fig.update_layout(title_text="COVID-19 COUNTY TRACKER OVER TWO-WEEK PERIOD")
+#pio.write_html(fig, file='hello_world.html', auto_open=True)
+
+#fig = go.Figure(go.Scatter(x=[1, 2, 3, 4], y=[4, 3, 2, 1]))
+#fig.update_layout(title_text='hello world')
+#pio.show(fig)
