@@ -1,6 +1,8 @@
-# this is the main python file that will conduct all of my CSV operations
+# COVID-19 County Tracker
 
-# import statements
+##
+## Module & Package Import
+##
 
 import os 
 from datetime import date # to get the date for the email
@@ -10,13 +12,30 @@ from dotenv import load_dotenv # to load the env file and get encrypted info
 from app import APP_ENV 
 from app.email_service import send_email # use the sendgrid package to send email
 
-# help to load all of the .env info
+import chart_studio
+import chart_studio.plotly as py
+import plotly.graph_objects as go
+
+##
+## Get Environment Variables
+##
+
 load_dotenv()
 
-# encrypted info and the defaults
 STATE = os.getenv("STATE", default="California")
 COUNTY = os.getenv("COUNTRY_CODE", default="Orange")
 MY_NAME = os.getenv("MY_NAME", default="Hottest Person in the World")
+
+# plotly credential setup
+PLOTLY_USER_NAME = os.environ.get("PLOTLY_USER_NAME")
+PLOTLY_API_KEY = os.environ.get("PLOTLY_API_KEY")
+
+chart_studio.tools.set_credentials_file(username=PLOTLY_USER_NAME, api_key=PLOTLY_API_KEY)
+
+
+##
+## Begin Functions 
+##
 
 def get_data():
     """
@@ -39,8 +58,6 @@ def get_data():
     # write the data to a file
     with open(file_name, 'wb') as f:
         f.write(data)
-
-    #return file_name
 
 def string_validation(state_input, county_input):
     """
@@ -184,6 +201,43 @@ def formatting(amount):
     return "{:,}".format(amount)
 
 
+def plotly_graph(deaths_array, cases_array):
+    """
+    WHAT IT DOES: creates a Plotly graph containing data from the last 14 days
+
+    PARAMETERS: passes in a deaths and cases array
+
+    RETURNS: a graph
+    """
+
+    length = len(deaths_array)
+    i = 1
+
+    pd = []
+    pc = []
+
+    while i < 15:
+        pd.append(deaths_array[length - i])
+        pc.append(cases_array[length - i])
+        i = i + 1   
+    
+    deaths = go.Scatter(
+    x=[14,13,12,11,10,9,8,7,6,5,4,3,2,1],
+    y=[pd[0], pd[1], pd[2], pd[3], pd[4], pd[5], pd[6], pd[7], pd[8], pd[9], pd[10], pd[11], pd[12], pd[13]]
+    )
+    cases = go.Scatter(
+    x=[14,13,12,11,10,9,8,7,6,5,4,3,2,1],
+    y=[pc[0], pc[1], pc[2], pc[3], pc[4], pc[5], pc[6], pc[7], pc[8], pc[9], pc[10], pc[11], pc[12], pc[13]]
+    )
+    
+    data = [deaths, cases]
+
+    py.plot(data, filename = 'basic-line', auto_open=True)
+
+##
+## If Name == Main
+##
+
 if __name__ == "__main__":
 
     get_data()
@@ -234,8 +288,11 @@ if __name__ == "__main__":
     
     # data validation to make sure the state and county exist!
     if data_validation(state_input, county_input, states_array, counties_array) == True:
+
+        ##
+        ## HTML Object for Email
+        ##
             
-        # start the email
         html = ""
         html += f"<h3>Good Morning, {MY_NAME}!</h3>"
 
@@ -264,8 +321,28 @@ if __name__ == "__main__":
         # print a final goodbye message
         html += "<h3>Thank you for using the COVID-19 County Tracker.</h3>"
 
+        # this will include the plotly graph in the email
+        plotly_graph(deaths_array, cases_array)
+        graph = "https://plotly.com/~sma299/1/#plot"
+        template = (''
+            '<a href="{graph_url}" target="_blank">' # Open the interactive graph when you click on the image
+            '<img src="{graph_url}.png">'        # Use the ".png" magic url so that the latest, most-up-to-date image is included
+            '</a>'
+            '{caption}'                              # Optional caption to include below the graph
+            '<br>'                                   # Line break
+            '<a href="{graph_url}" style="color: rgb(190,190,190); text-decoration: none; font-weight: 200;" target="_blank">'
+            'Click to comment and see the interactive graph'  # Direct readers to Plotly for commenting, interactive graph
+            '</a>'
+            '<br>'
+            '<hr>'                                   # horizontal line
+        '')
+
+        _ = template.format(graph_url=graph, caption='')
+        html += _
+
         # send the email
         send_email(subject="COVID-19 Daily County Report", html=html)
 
     else: # error message
         print("Unfortunately, that state and county combination does not exist in our database. Please try again.")
+

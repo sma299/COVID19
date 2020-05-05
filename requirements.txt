@@ -1,4 +1,5 @@
 # this is where I will put any packages that I need to download into my conda environment
-pandas
 python-dotenv
 sendgrid==6.0.5
+chart-studio
+pytest

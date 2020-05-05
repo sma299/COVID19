@@ -1,4 +1,4 @@
-# COVID
+# COVID19
 This application tracks COVID-19 data by US county over time and emails the user a summary of the statistics.
 
 ## Instructions for the Project:
@@ -39,7 +39,7 @@ heroku login
 
 Set up the server on Heroku
 ```sh
-heroku create covid-app-your-name
+heroku create covid-tracker-your-name
 ```
 
 Configure your environment variable using Heroku interface OR from the command line
@@ -51,6 +51,13 @@ heroku config:set MY_EMAIL_ADDRESS="insert@email.com"
 heroku config:set MY_NAME="Mr.Krabs"
 heroku config:set STATE="California"
 heroku config:set COUNTY="Orange"
+heroku config:set PLOTLY_USER_NAME = "plotly"
+heroku config:set PLOTLY_API_KEY = "insertAPIkey"
+```
+
+To make sure everything is up-to-date on the Heroku server
+```sh
+git push heroku master
 ```
 
 Finally, run the app on the Heroku server
@@ -59,12 +66,7 @@ heroku run bash
 python -m app.covid
 ```
 
-
 ## Testing
-Install the pytest package within a virtual environment using pip
-```sh
-pip install pytest
-```
 
 Run the package using this command
 ```sh
