@@ -1,4 +1,4 @@
-# COVID
+# COVID19
 This application tracks COVID-19 data by US county over time and emails the user a summary of the statistics.
 
 ## Instructions for the Project:
@@ -51,6 +51,8 @@ heroku config:set MY_EMAIL_ADDRESS="insert@email.com"
 heroku config:set MY_NAME="Mr.Krabs"
 heroku config:set STATE="California"
 heroku config:set COUNTY="Orange"
+heroku config:set PLOTLY_USER_NAME = "plotly"
+heroku config:set PLOTLY_API_KEY = "insertAPIkey"
 ```
 
 Finally, run the app on the Heroku server
