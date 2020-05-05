@@ -12,6 +12,7 @@ from dotenv import load_dotenv # to load the env file and get encrypted info
 from app import APP_ENV 
 from app.email_service import send_email # use the sendgrid package to send email
 
+from IPython.display import display, HTML
 import chart_studio
 import chart_studio.plotly as py
 import plotly.graph_objects as go
@@ -200,6 +201,32 @@ def formatting(amount):
     """
     return "{:,}".format(amount)
 
+
+def plotly_graph(deaths_array):
+    """
+    WHAT IT DOES: creates a Plotly graph containing data from the last 14 days
+
+    PARAMETERS: passes in a list
+
+    RETURNS: a graph
+    """
+    len_deaths = len(deaths_array)
+    i = 1
+    plotly_deaths = []
+    while i < 15:
+        plotly_deaths.append(deaths_array[len_deaths - i])
+        i = i + 1
+    
+    print(plotly_deaths)
+    trace0 = go.Scatter(
+    x=[14,13,12,11,10,9,8,7,6,5,4,3,2,1],
+    y= 
+    )
+
+    data = [trace0]
+
+    py.plot(data, filename = 'basic-line', auto_open=True)
+
 ##
 ## If Name == Main
 ##
@@ -286,32 +313,6 @@ if __name__ == "__main__":
 
         # print a final goodbye message
         html += "<h3>Thank you for using the COVID-19 County Tracker.</h3>"
-
-
-        # create Plotly graph HERE
-        len_deaths = len(deaths_array)
-        i = 1
-        plotly_deaths = []
-        while i < 15:
-            plotly_deaths.append(deaths_array[len_cases - i])
-            i = i + 1
-
-        trace0 = go.Scatter(
-        x=[14,13,12,11,10,9,8,7,6,5,4,3,2,1],
-        y=plotly_deaths
-        )
-
-        data = [trace0]
-
-        py.plot(data, filename = 'basic-line', auto_open=True)
-
-
-
-
-
-
-
-
 
         # send the email
         #send_email(subject="COVID-19 Daily County Report", html=html)
