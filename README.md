@@ -28,6 +28,16 @@ pip install -r requirements.txt
 ## Usage
 Run the python script locally
 
+Create a .env file with the following values:
+```sh
+APP_ENV="development"
+SENDGRID_API_KEY="insertAPIkey"
+MY_EMAIL_ADDRESS="insert@email.com"
+MY_NAME="Mr.Krabs"
+PLOTLY_USER_NAME = "plotly"
+PLOTLY_API_KEY = "insertAPIkey"
+```
+
 Example
 ```sh
 python -m app.covid
