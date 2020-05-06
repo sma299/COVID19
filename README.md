@@ -26,7 +26,6 @@ pip install -r requirements.txt
 ```
 
 ## Usage
-Run the python script locally
 
 Create a .env file with the following values:
 ```sh
@@ -37,6 +36,7 @@ MY_NAME="Mr.Krabs"
 PLOTLY_USER_NAME = "plotly"
 PLOTLY_API_KEY = "insertAPIkey"
 ```
+Run the python script locally
 
 Example
 ```sh
